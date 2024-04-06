@@ -1,9 +1,10 @@
+from datetime import datetime
 import threading
 import socket
 import json
 import copy
 import time
-from datetime import datetime
+import sys
 
 node_update_status_lock = threading.Lock()
 node_update_lock = threading.Lock()
@@ -26,14 +27,14 @@ node_update_status = {}
 update_counter = 0
 base_port = 5000
 
-def initialize():
+def initialize(file_name):
     global node_update_status, update_pause_barrier_ss, update_pause_barrier_a
     neighbors = {}
     network_map = {}
     nodes = set()
     
     # open input.txt file
-    with open("input.txt", "r") as file:
+    with open(file_name, "r") as file:
         for line in file:
             # get nodes and cost from line
             node1, node2, cost = map(int, line.strip().split())
@@ -293,7 +294,7 @@ def print_distance_vectors():
                 print(f"-- Node {destination}: Cost {cost}")
 
 if __name__ == "__main__":   
-    network_map, neighbors, total_nodes = initialize()
+    network_map, neighbors, total_nodes = initialize(sys.argv[1])
     start_barrier = threading.Barrier(total_nodes)
     
     # display the starting configuration to user
